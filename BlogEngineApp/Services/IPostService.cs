@@ -9,8 +9,19 @@ namespace BlogEngineApp.Services
 {
     public interface IPostService
     {
+
+        public List<Post> getPosts();
+
+        public Post getPost(int id);
+
+        public Post ModificarCompletamenteElPost(int id, string text);
+
+        public Tuple<Post, bool> AprobarPost(int id, string desicion);
+
         public Post CrearPost(IFormFile file);
 
-        public Post EliminarPost(int id);
+        public void EliminarPost(int id);
+
+
     }
 }

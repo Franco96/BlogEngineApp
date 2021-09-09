@@ -1,2 +1,0 @@
-Hola estoy probando subir un post de prueba en este archivo luego mostrare este contenido en un get
-y se modificara este contenido con un put

@@ -14,6 +14,8 @@ namespace BlogEngineApp.DTOs
         public DateTime SubmitDate { get; set; }
         public bool Approval { get; set; }
 
+        public bool Rechazado { get; set; }
+
         public string PostText { get; set; }
 
     }

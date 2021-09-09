@@ -17,12 +17,15 @@ namespace BlogEngineApp.DTOs
 
             CreateMap<UserDTO, User>();
 
+            CreateMap<ArchivoDTO, Archivo>();
+            CreateMap<Archivo, ArchivoDTO>();
+
             CreateMap<PostDTO, Post>();
 
             CreateMap<Post, PostDTO>()
                 .ForMember(x => x.PostText, 
                 y => y.MapFrom(z => File.ReadAllText(Directory.GetCurrentDirectory()+  
-                "\\Archivos\\" + z.IdArchivos +"."+z.IdArchivosNavigation.Extension)));
+                "\\Archivos\\" + z.IdArchivos +z.IdArchivosNavigation.Extension)));
 
         }
     }

@@ -13,6 +13,8 @@ namespace BlogEngineApp.Models
         public DateTime SubmitDate { get; set; }
         public bool Approval { get; set; }
 
+        public bool Rechazado { get; set; }
+
         public virtual Archivo IdArchivosNavigation { get; set; }
         public virtual User IdUserNavigation { get; set; }
     }

@@ -69,6 +69,8 @@ namespace BlogEngineApp.Models
 
                 entity.Property(e => e.Approval).HasColumnName("approval");
 
+                entity.Property(e => e.Rechazado).HasColumnName("rechazado");
+
                 entity.Property(e => e.IdArchivos).HasColumnName("id_archivos");
 
                 entity.Property(e => e.IdUser).HasColumnName("id_user");
