@@ -8,11 +8,11 @@ Para ello solamente hay que cambiar la informacion que ya esta seteada en el arc
 En la parte que dice  "BlogDBContext" hay que setearle el 'User ID' y 'Password' y ponerle el que tengan configurado en 
 su sql server.
 ### Herramientas utilizadas para el proyecto
-Se utilizo ASP.NET con lenguaje C# , IDE visual studio 2019.
-AutoMapper para el mapeo entre los DTOs y Modelos.
-ORM Entity Framework para el mapeo entre las tablas y los modelos.
-SQL server para la base de datos.
-Postman para el testeo de los endpoind de la Api. 
+- Se utilizo ASP.NET con lenguaje C# , IDE visual studio 2019.
+- AutoMapper para el mapeo entre los DTOs y Modelos.
+- ORM Entity Framework para el mapeo entre las tablas y los modelos.
+- SQL server para la base de datos.
+- Postman para el testeo de los endpoind de la Api. 
 ### Tiempo en realizar la prueba tecnica
 Tarde en total 2 semanas desde que recibi el enunciado de la prueba tecnica.
 ### Extras
