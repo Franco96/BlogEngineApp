@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "8f65c5d0-889a-4bfe-a16c-20b238569167",
+		"name": "BlogApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Endpoint para usuarios",
+			"item": [
+				{
+					"name": "Obtener Usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/ObtenerUsuarios",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ObtenerUsuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener usuario por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/ObtenerUsuario/12",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ObtenerUsuario",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n\"userName\": \"antonio8833\",\r\n\"password\":\t\"tomate\",\r\n\"role\":\t2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44356/api/CrearUsuario",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"CrearUsuario"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EndPoind para Post",
+			"item": [
+				{
+					"name": "Obtener todos los Post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/ObtenerPosts",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ObtenerPosts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Posts Pendientes a aprobar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/ObtenerPostsPendientes",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ObtenerPostsPendientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Post Aprobados",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/ObtenerPostsAprobados",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ObtenerPostsAprobados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Post por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/ObtenerPost/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ObtenerPost",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Aprovar o rechazar Post",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "decision",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "decision",
+									"value": "approve",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:44356/api/AprobarPost/9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"AprobarPost",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar completamente el post",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "text",
+									"value": "Hola hoy es un buen dia para ser un gran dia.",
+									"type": "text"
+								},
+								{
+									"key": "text",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:44356/api/ModificarPost/9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"ModificarPost",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Usuario/Desktop/Blogs.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:44356/api/CrearPost",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"CrearPost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Post",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44356/api/EliminarPost/7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44356",
+							"path": [
+								"api",
+								"EliminarPost",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
