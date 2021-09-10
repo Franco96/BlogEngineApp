@@ -32,7 +32,7 @@ namespace BlogEngineApp.Controllers
             _postService = postService;
             _userService = userService;
             _mapper = mapper;
-            user = _userService.GetUser(11);
+            user = _userService.GetUser(5);
         
         }
 
@@ -41,6 +41,15 @@ namespace BlogEngineApp.Controllers
         [HttpGet("ObtenerPosts")]
         public IActionResult ObtenerPosts()
         {
+
+            //Si es usuario escritor no tiene acceso a ver post todos los post solo los aprobados
+            if (user.Role == 2)
+            {
+
+                return Unauthorized("El usuario '" + user.UserName + "' en sesion no tiene acceso a ver todos los post porque no es editor");
+
+            }
+
             List<Post> posts = _postService.getPosts();
 
             List<PostDTO> postsDTO = _mapper.Map<List<PostDTO>>(posts);
