@@ -20,12 +20,19 @@ namespace BlogEngineApp.Controllers
 
         private readonly IMapper _mapper;
         private IPostService _postService { get; set; }
+        private IUserService _userService { get; set; }
 
 
-        public PostController(IPostService postService, IMapper mapper) {
+        //se utiliza este usuario para simular que esta en sesion y poder controlar el tema de roles con sus respectivos accesos
+        private User user { get; set; }
+
+
+        public PostController(IPostService postService, IUserService userService, IMapper mapper) {
 
             _postService = postService;
+            _userService = userService;
             _mapper = mapper;
+            user = _userService.GetUser(11);
         
         }
 
@@ -41,8 +48,36 @@ namespace BlogEngineApp.Controllers
             return Ok(postsDTO);
         }
 
-       
-        [HttpGet("ObtenerPost/{id}")]
+        [HttpGet("ObtenerPostsPendientes")]
+        public IActionResult ObtenerPostsPendientes() {
+
+            //Si es usuario escritor no tiene acceso a ver post pendientes a aprobar
+            if (user.Role == 2)
+            {
+
+                return Unauthorized("El usuario '" + user.UserName + "' en sesion no tiene acceso a ver post pendientes a aprobar porque no es editor");
+
+            }
+
+            List<Post> posts = _postService.getPostsPendientes();
+
+            List<PostDTO> postsDTO = _mapper.Map<List<PostDTO>>(posts);
+
+            return Ok(postsDTO);
+        }
+
+        [HttpGet("ObtenerPostsAprobados")]
+        public IActionResult ObtenerPostsAprobados()
+        {
+            List<Post> posts = _postService.getPostsAprobados();
+
+            List<PostDTO> postsDTO = _mapper.Map<List<PostDTO>>(posts);
+
+            return Ok(postsDTO);
+        }
+
+
+            [HttpGet("ObtenerPost/{id}")]
         public IActionResult Get(int id)
         {
             Post post = _postService.getPost(id);
@@ -78,6 +113,15 @@ namespace BlogEngineApp.Controllers
         [HttpPut("AprobarPost/{id}")]
         public IActionResult Post(int id, [FromForm] string decision)
         {
+
+            //Si es usuario escritor no tiene acceso a aprobar o rechazar post
+            if (user.Role == 2)
+            {
+
+                return Unauthorized("El usuario '" + user.UserName + "' en sesion no tiene acceso a aprobar/rechazar post porque no es editor");
+
+            }
+
             Tuple<Post, bool> tupla = _postService.AprobarPost(id, decision);
 
             if (tupla.Item1 == null)
@@ -104,8 +148,12 @@ namespace BlogEngineApp.Controllers
         [HttpPost("CrearPost")]
         public IActionResult CrearPost([FromForm] IFormFile file)
         {
+            if (file == null) {
 
-            Post post = _postService.CrearPost(file);
+                return BadRequest("Se debe ingresar un archivo en el body como parametro");
+            }
+
+            Post post = _postService.CrearPost(file,5);
 
 
             PostDTO postDTO = _mapper.Map<PostDTO>(post);
@@ -119,6 +167,14 @@ namespace BlogEngineApp.Controllers
         [HttpDelete("EliminarPost/{id}")]
         public IActionResult EliminarPost(int id)
         {
+            //Si es usuario escritor no tiene acceso a eliminar post
+            if (user.Role == 2) {
+
+                return Unauthorized("El usuario '"+user.UserName+ "' en sesion no tiene acceso a eliminar post porque no es editor");
+                    
+            }
+
+
             //Busco primero el post que se quiere eliminar para luego devolverlo 
             Post post = _postService.getPost(id);
            

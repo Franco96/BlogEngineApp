@@ -1,6 +1,7 @@
 using AutoMapper;
 using BlogEngineApp.DTOs;
 using BlogEngineApp.Models;
+using BlogEngineApp.Repositories;
 using BlogEngineApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -56,9 +57,13 @@ namespace BlogEngineApp
             services.AddDbContext<BlogDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString(nameof(BlogDBContext))));
             services.AddControllers();
 
+            //Agrego el repository
+            services.AddTransient<IGenericRepository, GenericRepository>();
+
             //Agrego los servicios utilizados por los controladores
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPostService, PostService>();
+           
 
 
         }

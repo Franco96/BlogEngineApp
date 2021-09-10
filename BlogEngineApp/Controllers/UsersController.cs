@@ -20,8 +20,6 @@ namespace BlogEngineApp.Controllers
         
         private readonly IMapper _mapper;
         private  IUserService _userService { get; set; }
-
-
         public UsersController(IUserService userService, IMapper mapper)
         {
            
@@ -29,100 +27,48 @@ namespace BlogEngineApp.Controllers
             _mapper = mapper;
         }
 
-        // GET: /Users
+        
         [HttpGet("ObtenerUsuarios")]
-        public async Task<IActionResult> GetUser()
+        public IActionResult GetUsers()
         {
 
-            var users = await _userService.GetUsers();
+            List<User> users = _userService.GetUsers();
+            List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
 
-             return Ok(_mapper.Map<IEnumerable<UserDTO>>(users));
+             return Ok(userDTOs);
 
           
         }
 
-
-        /*
-        // GET: api/Movies/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        [HttpGet("ObtenerUsuario/{id}")]
+        public IActionResult GetUser(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            User user = _userService.GetUser(id);
 
-            if (movie == null)
+            if (user == null)
             {
-                return NotFound();
+                return NotFound("No existe un usuario que tenga el identificador ingresado");
             }
 
-            return movie;
+            return Ok(_mapper.Map<UserDTO>(user));
         }
 
-        // PUT: api/Movies/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
-        {
-            if (id != movie.Id)
+        [HttpPost("CrearUsuario")]
+        public IActionResult crearUsuario([FromBody] UserDTO userDTO) {
+
+
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return this.BadRequest();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
+            User user = _mapper.Map<User>(userDTO);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _userService.crearUser(user);
 
-            return NoContent();
+            return Ok(userDTO);
         }
-
-        // POST: api/Movies
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
-        {
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
-        }
-
-        // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Movie>> DeleteMovie(int id)
-        {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            _context.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
-
-            return movie;
-        }
-
-        private bool MovieExists(int id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
-        }
-
-        */
+       
     }
 
 }

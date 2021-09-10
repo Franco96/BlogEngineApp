@@ -8,6 +8,10 @@ namespace BlogEngineApp.Services
 {
     public interface IUserService
     {
-        Task<List<User>> GetUsers();
+        public List<User> GetUsers();
+
+        public User GetUser(int id);
+
+        public void crearUser(User user);
     }
 }

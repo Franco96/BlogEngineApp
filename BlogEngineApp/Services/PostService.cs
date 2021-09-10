@@ -1,4 +1,5 @@
 ﻿using BlogEngineApp.Models;
+using BlogEngineApp.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,32 +12,38 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace BlogEngineApp.Services
 {
-    public class PostService:IPostService
+    public class PostService : IPostService
     {
 
-        public readonly BlogDBContext _context;
+        public readonly IGenericRepository _repository;
 
-        public readonly User user;
+       
+        public PostService( IGenericRepository repository) {
 
-
-        public PostService(BlogDBContext context) {
-
-            _context = context;
-
-            //Se simula que este usuario esta logueado con datos mockeados
-            user = _context.Users.Find(5);
-
+            _repository = repository;
+            
         }
 
         public List<Post> getPosts()
         {
-            return _context.Posts.Include(u => u.IdArchivosNavigation).ToList();
+            return _repository.GetPostAll();
+        }
+
+        //Se retornaran los post pendientes es decir lo que no estan aprobados y tampoco rechazados
+        public List<Post> getPostsPendientes() {
+
+            return _repository.getPostsPendientes();
+        }
+
+        public List<Post> getPostsAprobados()
+        {
+            return _repository.getPostsAprobados();
+
         }
 
         public Post getPost(int id) {
 
-           
-            return _context.Posts.Include(u => u.IdArchivosNavigation).FirstOrDefault(x => x.Id == id); 
+            return _repository.getPostById(id);
 
         }
 
@@ -48,141 +55,58 @@ namespace BlogEngineApp.Services
             if (post != null) {
 
                 Archivo archivo = post.IdArchivosNavigation;
-                //Borro el archivo ubicado en la carpeta local del proyecto
-                File.Delete(archivo.Ubicacion);
 
                 //Creo un nuevo archivo con el texto ingresado
                 string RutaProyecto = Directory.GetCurrentDirectory();
-                //ruta de donde se guardaran los archivos localmente
-                string ruta = Path.Combine(RutaProyecto + "\\Archivos\\" + archivo.Id +".txt");
-                
-                using (FileStream fs = File.Create(ruta))
+                //ruta de donde se guardara el nuevo archivo
+                string rutaNueva = Path.Combine(RutaProyecto + "\\Archivos\\" + archivo.Id + ".txt");
+
+                //Borro el archivo ubicado en la carpeta local del proyecto y tambien actualizo el post con su archivo
+                File.Delete(_repository.actualizarContenidoPostCompletamente(post,archivo, rutaNueva));
+
+                using (FileStream fs = File.Create(rutaNueva))
                 {
                     byte[] info = new UTF8Encoding(true).GetBytes(text);
-                    // Add some information to the file.
+                    
                     fs.Write(info, 0, info.Length);
                 }
-
-                archivo.Ubicacion = ruta;
-                archivo.Extension = ".txt";
-                post.SubmitDate = DateTime.Now;
-
-                _context.Update(archivo);
-                _context.Update(post);
-
-                _context.SaveChanges();
-
-
             }
-
 
             return post;
-
+          
         }
+
+
+
 
         //Se aprueba o se rechaza el post
-        public Tuple<Post,bool> AprobarPost(int id, string desicion) {
+        public Tuple<Post,bool> AprobarPost(int id, string decision) {
 
-            Post post = getPost(id);
-            bool bienIngresada = true;
-
-            if (post != null)
-            {
-                if (desicion == "approve")
-                {
-                    post.Approval = true;
-                    post.Rechazado = false;
-                }
-                else if (desicion == "reject")
-                {
-                    post.Rechazado = true;
-                    post.Approval = false;
-
-                }
-                else bienIngresada = false;
-
-
-            _context.Update(post);
-            _context.SaveChanges();
-
-            }
-
-            
-
-            return new Tuple<Post, bool>(post,bienIngresada);
+            return _repository.AprobarPost(id, decision);
         }
 
-        public  Post CrearPost(IFormFile file)
+
+
+        public  Post CrearPost(IFormFile file,int userId)
         {
+            
+            Archivo archivo = _repository.crearArchivo(file);
 
-            double taminio = file.Length;
-            taminio = Math.Round(taminio, 2);
-
-            Archivo archivo = new Archivo();
-           
-            archivo.Extension = Path.GetExtension(file.FileName);
-            archivo.Tamanio = taminio;
-            archivo.Ubicacion = "";
-            archivo.Nombre = "";
-
-            _context.Add(archivo);
-            _context.SaveChanges();
-
-
-
-            string RutaProyecto = Directory.GetCurrentDirectory();
-
-            //ruta de donde se guardaran los archivos localmente
-            string ruta = Path.Combine(RutaProyecto + "\\Archivos\\" + archivo.Id + Path.GetExtension(file.FileName));
-
-
+            
             //Genero el archivo en la carpeta local del proyecto
-            using (var stream = File.Create(ruta))
+            using (var stream = File.Create(archivo.Ubicacion))
             {
                 file.CopyToAsync(stream);
             }
-
-            archivo.Ubicacion = ruta;
-            archivo.Nombre = ""+archivo.Id;
-
-            Post post = new Post();
-            post.IdUser = user.Id;
-            post.IdArchivos = archivo.Id;
-            post.SubmitDate = DateTime.Now;
-            post.Approval = false;
-            post.Rechazado = false;
-
-
-            _context.Add(post);
-
-            _context.SaveChanges();
-
-
-            return post;
+            return _repository.crearPost(userId, archivo.Id);
         }
 
 
         public void EliminarPost(int id)
         {
 
-            Post post = _context.Posts.Include(u => u.IdArchivosNavigation).FirstOrDefault(x => x.Id == id);
-
-
-            if (post != null)
-            {
-
-                Archivo archivo = post.IdArchivosNavigation;
-
-                //Borro el archivo ubicado en la carpeta local del proyecto
-                File.Delete(archivo.Ubicacion);
-
-                //Elimino el post
-                _context.Remove(post);
-                //Elimino el archivo que contenia el post
-                _context.Remove(archivo);
-
-                _context.SaveChanges();
-            }
+          
+            _repository.eliminarPost(id);
 
            
 

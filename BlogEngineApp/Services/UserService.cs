@@ -1,4 +1,5 @@
 ﻿using BlogEngineApp.Models;
+using BlogEngineApp.Repositories;
 using BlogEngineApp.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,17 +12,28 @@ namespace BlogEngineApp.Services
     public class UserService : IUserService
     {
 
-        public readonly BlogDBContext _context;
+        public readonly IGenericRepository _repository;
 
-        public UserService(BlogDBContext context) {
+        public UserService(IGenericRepository repository) {
 
-            _context = context;
+            _repository = repository;
 
         }
 
-        public async Task<List<User>> GetUsers()
+        public List<User> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return _repository.GetUsersAll();
+        }
+
+        public User GetUser(int id) {
+
+            return _repository.GetUserById(id);
+        }
+
+
+        public void crearUser(User user) {
+
+            _repository.crearUser(user);
         }
     }
 }
